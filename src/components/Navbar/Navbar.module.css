@@ -1,19 +1,11 @@
-/* ==========================================================
-   Navbar
-   Kompüter: yaşıl 2 sətir + ağ kateqoriya zolağı
-   ≤ 900px : hamburger menyu (yan panel)
-   ========================================================== */
-
 .navbar {
   width: 100%;
   position: relative;
   z-index: 100;
   color: #fff;
   background: #6cba45;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ---------- Yuxarı menyu ---------- */
 .navbarTop {
   min-height: clamp(44px, 3.4vw, 56px);
   padding: 0 clamp(20px, 2.2vw, 42px);
@@ -86,7 +78,6 @@
   pointer-events: none;
 }
 
-/* ---------- Əsas sətir ---------- */
 .navbarMain {
   min-height: clamp(72px, 5.1vw, 94px);
   padding: 0 clamp(20px, 2.2vw, 42px);
@@ -96,7 +87,6 @@
   background: #6cba45;
 }
 
-/* Hamburger – kompüterdə gizli */
 .hamburger {
   display: none;
   align-items: center;
@@ -114,7 +104,6 @@
   height: 28px;
 }
 
-/* Loqo */
 .navbarLogo {
   display: flex;
   align-items: center;
@@ -128,7 +117,6 @@
   object-fit: contain;
 }
 
-/* Axtarış */
 .navbarSearch {
   width: clamp(230px, 19vw, 370px);
   height: clamp(40px, 2.7vw, 50px);
@@ -138,7 +126,9 @@
   flex-shrink: 0;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.17);
-  transition: background 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .navbarSearch:focus-within {
@@ -187,7 +177,6 @@
   opacity: 0.75;
 }
 
-/* Sosial şəbəkələr */
 .navbarSocials {
   margin-left: auto;
   display: flex;
@@ -206,7 +195,9 @@
   background: rgba(255, 255, 255, 0.78);
   border-radius: 50%;
   text-decoration: none;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
 }
 
 .socialIcon svg {
@@ -219,7 +210,6 @@
   transform: translateY(-2px);
 }
 
-/* Profil, sevimlilər, səbət */
 .navbarActions {
   display: flex;
   align-items: center;
@@ -235,7 +225,9 @@
   flex-shrink: 0;
   color: #fff;
   text-decoration: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .navbarAction:hover {
@@ -261,7 +253,6 @@
   text-align: center;
 }
 
-/* ---------- Ağ kateqoriya zolağı ---------- */
 .categoryBar {
   width: 100%;
   padding: clamp(18px, 1.6vw, 30px) clamp(20px, 2.2vw, 42px)
@@ -312,15 +303,11 @@
   width: 100%;
 }
 
-/* ---------- Mobil menyu (yan panel) – kompüterdə gizli ---------- */
 .drawerOverlay,
 .drawer {
   display: none;
 }
 
-/* ==========================================================
-   Planşet və mobil: hamburger rejimi
-   ========================================================== */
 @media (max-width: 900px) {
   .navbarTop,
   .categoryBar,
@@ -379,7 +366,9 @@
     background: rgba(0, 0, 0, 0.45);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease;
   }
 
   .drawerOverlay.open {
@@ -400,7 +389,9 @@
     background: #fff;
     transform: translateX(-100%);
     visibility: hidden;
-    transition: transform 0.3s ease, visibility 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      visibility 0.3s ease;
     box-shadow: 8px 0 30px rgba(0, 0, 0, 0.18);
   }
 
@@ -484,7 +475,9 @@
     font-weight: 500;
     text-decoration: none;
     border-left: 3px solid transparent;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
   }
 
   .drawerLink:hover {
@@ -566,7 +559,6 @@
   }
 }
 
-/* Kiçik mobil */
 @media (max-width: 480px) {
   .navbarMain {
     padding: 10px 14px 14px;

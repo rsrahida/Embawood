@@ -31,6 +31,28 @@ const translations = {
     catLivingRoom: "Qonaq",
     catTables: "Masa və stullar",
     catMattresses: "Döşəklər",
+    // Slider
+    heroBadge1: "Yeni kolleksiya",
+    heroTitle1: "Yuxu rahatlığı evinizdə başlayır",
+    heroText1:
+      "Yataq otağı dəstləri ilə evinizə zərif və rahat görünüş qazandırın.",
+    heroBtn1: "Yataqlara bax",
+
+    heroBadge2: "Ən çox satılanlar",
+    heroTitle2: "Qonaq otağınız sizi təmsil edir",
+    heroText2:
+      "Divanlar, künc dəstləri və jurnal masaları ilə isti ab-hava yaradın.",
+    heroBtn2: "Qonaq otağına bax",
+
+    heroBadge3: "Yeni imkan",
+    heroTitle3: "Otağınızı özünüz qurun",
+    heroText3: "Mebelləri seçin, düzün və xəyalınızdakı otağı öncədən görün.",
+    heroBtn3: "Otağını qur",
+
+    prevSlide: "Əvvəlki slayd",
+    nextSlide: "Növbəti slayd",
+    goToSlide: "Slayda keç",
+    scrollTop: "Yuxarı qalx",
   },
 
   EN: {
@@ -62,6 +84,29 @@ const translations = {
     catLivingRoom: "Living room",
     catTables: "Tables & Chairs",
     catMattresses: "Mattresses",
+    // Slider
+    heroBadge1: "New collection",
+    heroTitle1: "Sweet dreams start at home",
+    heroText1:
+      "Give your bedroom an elegant and comfortable look with our bedroom sets.",
+    heroBtn1: "Shop bedrooms",
+
+    heroBadge2: "Best sellers",
+    heroTitle2: "Your living room tells your story",
+    heroText2:
+      "Create a warm atmosphere with sofas, corner sets and coffee tables.",
+    heroBtn2: "Shop living room",
+
+    heroBadge3: "New feature",
+    heroTitle3: "Build your own room",
+    heroText3:
+      "Pick furniture, arrange it and preview your dream room in advance.",
+    heroBtn3: "Build your room",
+
+    prevSlide: "Previous slide",
+    nextSlide: "Next slide",
+    goToSlide: "Go to slide",
+    scrollTop: "Back to top",
   },
 };
 

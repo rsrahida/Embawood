@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-
 import {
   Search,
   UserRound,
@@ -11,7 +10,6 @@ import {
   Menu,
   X,
 } from "lucide-react";
-
 import {
   FaFacebookF,
   FaInstagram,
@@ -19,9 +17,7 @@ import {
   FaLinkedinIn,
   FaWhatsapp,
 } from "react-icons/fa";
-
 import { useLanguage } from "../../context/LanguageContext";
-
 import logo from "../../assets/logo.svg";
 import styles from "./Navbar.module.css";
 
@@ -48,14 +44,12 @@ const socialLinks = [
   },
 ];
 
-// Yuxarı menyu linkləri
 const topLinks = [
   { key: "shops", path: "/shops" },
   { key: "roomBuilder", path: "/room-builder" },
   { key: "campaigns", path: "/campaigns" },
 ];
 
-// Məhsul kateqoriyaları
 const categories = [
   { key: "catAll", path: "/products" },
   { key: "catBedroom", path: "/products/bedroom" },
@@ -66,26 +60,18 @@ const categories = [
 
 const Navbar = () => {
   const { language, setLanguage, t } = useLanguage();
-
   const [search, setSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
-
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Sonradan səbət context-inə qoşaraq real məhsul sayını göstərə bilərsən
   const cartCount = 0;
 
   const closeMenu = () => {
     setMenuOpen(false);
   };
-
-  // Səhifə dəyişdikdə mobil menyunu bağla
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
-
-  // Mobil menyu açıq olduqda scroll-u kilidlə və Escape ilə bağla
   useEffect(() => {
     if (!menuOpen) return undefined;
 
@@ -107,19 +93,14 @@ const Navbar = () => {
     };
   }, [menuOpen]);
 
-  // Məhsul axtarışı
   const handleSearch = (event) => {
     event.preventDefault();
-
     const query = search.trim();
-
     if (!query) return;
-
     navigate(`/?search=${encodeURIComponent(query)}`);
     setMenuOpen(false);
   };
 
-  // Linkin aktivlik class-ı
   const categoryClass =
     (baseClass, activeClass) =>
     ({ isActive }) =>
@@ -127,7 +108,6 @@ const Navbar = () => {
 
   return (
     <header className={styles.navbar}>
-      {/* Yuxarı menyu */}
       <div className={styles.navbarTop}>
         <nav className={styles.navbarTopLinks}>
           {topLinks.map(({ key, path }) => (
@@ -136,7 +116,6 @@ const Navbar = () => {
             </Link>
           ))}
         </nav>
-
         <div className={styles.navbarTopRight}>
           <a
             href="tel:126"
@@ -147,7 +126,6 @@ const Navbar = () => {
             <Phone size={15} />
             <span>126</span>
           </a>
-
           <div className={styles.languageSelector}>
             <select
               value={language}
@@ -157,15 +135,11 @@ const Navbar = () => {
               <option value="AZ">AZ</option>
               <option value="EN">EN</option>
             </select>
-
             <ChevronDown size={13} />
           </div>
         </div>
       </div>
-
-      {/* Əsas menyu sətri */}
       <div className={styles.navbarMain}>
-        {/* Mobil menyu düyməsi */}
         <button
           type="button"
           className={styles.hamburger}
@@ -176,13 +150,9 @@ const Navbar = () => {
         >
           <Menu />
         </button>
-
-        {/* Loqo */}
         <Link to="/" className={styles.navbarLogo} aria-label={t("home")}>
           <img src={logo} alt="Embawood" />
         </Link>
-
-        {/* Axtarış */}
         <form className={styles.navbarSearch} onSubmit={handleSearch}>
           <input
             type="search"
@@ -191,13 +161,10 @@ const Navbar = () => {
             placeholder={t("placeholder")}
             aria-label={t("placeholder")}
           />
-
           <button type="submit" aria-label={t("search")}>
             <Search />
           </button>
         </form>
-
-        {/* Sosial şəbəkələr */}
         <div className={styles.navbarSocials}>
           {socialLinks.map(({ name, icon: Icon, url }) => (
             <a
@@ -213,8 +180,6 @@ const Navbar = () => {
             </a>
           ))}
         </div>
-
-        {/* Profil, sevimlilər və səbət */}
         <div className={styles.navbarActions}>
           <Link
             to="/login"
@@ -224,7 +189,6 @@ const Navbar = () => {
           >
             <UserRound />
           </Link>
-
           <Link
             to="/wishlist"
             className={styles.navbarAction}
@@ -233,7 +197,6 @@ const Navbar = () => {
           >
             <Heart />
           </Link>
-
           <Link
             to="/cart"
             className={`${styles.navbarAction} ${styles.cartAction}`}
@@ -241,15 +204,12 @@ const Navbar = () => {
             aria-label={t("cart")}
           >
             <ShoppingCart />
-
             {cartCount > 0 && (
               <span className={styles.cartBadge}>{cartCount}</span>
             )}
           </Link>
         </div>
       </div>
-
-      {/* Desktop kateqoriya menyusu */}
       <nav className={styles.categoryBar} aria-label={t("products")}>
         <ul className={styles.categoryList}>
           {categories.map(({ key, path }) => (
@@ -268,15 +228,11 @@ const Navbar = () => {
           ))}
         </ul>
       </nav>
-
-      {/* Mobil menyunun arxa fonu */}
       <div
         className={`${styles.drawerOverlay} ${menuOpen ? styles.open : ""}`}
         onClick={closeMenu}
         aria-hidden="true"
       />
-
-      {/* Mobil menyu */}
       <aside
         id="mobile-menu"
         className={`${styles.drawer} ${menuOpen ? styles.open : ""}`}
@@ -294,7 +250,6 @@ const Navbar = () => {
           >
             <img src={logo} alt="Embawood" />
           </Link>
-
           <button
             type="button"
             className={styles.drawerClose}
@@ -304,11 +259,8 @@ const Navbar = () => {
             <X />
           </button>
         </div>
-
         <div className={styles.drawerBody}>
           <p className={styles.drawerTitle}>{t("products")}</p>
-
-          {/* Mobil məhsul kateqoriyaları */}
           <ul className={styles.drawerList}>
             {categories.map(({ key, path }) => (
               <li key={path}>
@@ -326,8 +278,6 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
-
-          {/* Digər səhifələr */}
           <ul className={`${styles.drawerList} ${styles.drawerListSecondary}`}>
             {topLinks.map(({ key, path }) => (
               <li key={path}>
@@ -344,14 +294,11 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
-
-          {/* Telefon və dil seçimi */}
           <div className={styles.drawerMeta}>
             <a href="tel:126" className={styles.drawerPhone}>
               <Phone size={18} />
               <span>126</span>
             </a>
-
             <div className={styles.drawerLanguage}>
               <select
                 value={language}
@@ -361,12 +308,9 @@ const Navbar = () => {
                 <option value="AZ">AZ</option>
                 <option value="EN">EN</option>
               </select>
-
               <ChevronDown size={14} />
             </div>
           </div>
-
-          {/* Mobil sosial şəbəkələr */}
           <div className={styles.drawerSocials}>
             {socialLinks.map(({ name, icon: Icon, url }) => (
               <a
