@@ -121,16 +121,18 @@ const HeroSlider = () => {
                 index === current ? styles.contentActive : ""
               }`}
             >
-              <span className={styles.badge}>{t(slide.badge)}</span>
-              <h2 className={styles.title}>{t(slide.title)}</h2>
-              <p className={styles.text}>{t(slide.text)}</p>
-              <Link
-                to={lp(slide.path)}
-                className={styles.button}
-                tabIndex={index === current ? 0 : -1}
-              >
-                {t(slide.button)}
-              </Link>
+              <div className={styles.glass}>
+                <span className={styles.badge}>{t(slide.badge)}</span>
+                <h2 className={styles.title}>{t(slide.title)}</h2>
+                <p className={styles.text}>{t(slide.text)}</p>
+                <Link
+                  to={lp(slide.path)}
+                  className={styles.button}
+                  tabIndex={index === current ? 0 : -1}
+                >
+                  {t(slide.button)}
+                </Link>
+              </div>
             </div>
           </article>
         ))}

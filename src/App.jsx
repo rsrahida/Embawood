@@ -26,6 +26,7 @@ import Shops from "./components/Shops/Shops";
 import Wishlist from "./components/Wishlist/Wishlist";
 import AllProducts from "./components/Products/AllProducts/AllProducts";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
+import Footer from "./components/Footer/Footer";
 
 const RedirectToLang = () => {
   const { lang } = useLanguage();
@@ -40,7 +41,6 @@ const LangLayout = () => {
   const { lang: urlLang } = useParams();
   const isSupported = SUPPORTED_LANGS.includes(urlLang?.toLowerCase());
   const isLowerCase = urlLang === urlLang?.toLowerCase();
-
   if (!isSupported || !isLowerCase) {
     return <RedirectToLang />;
   }
@@ -49,6 +49,7 @@ const LangLayout = () => {
     <>
       <Navbar />
       <Outlet />
+      <Footer />
     </>
   );
 };

@@ -38,16 +38,30 @@
     rgba(0, 0, 0, 0.35) 45%,
     rgba(0, 0, 0, 0) 80%
   );
+  -webkit-backdrop-filter: blur(5px) saturate(115%);
+  backdrop-filter: blur(5px) saturate(115%);
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.75) 45%,
+    rgba(0, 0, 0, 0.25) 75%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.75) 45%,
+    rgba(0, 0, 0, 0.25) 75%,
+    transparent 100%
+  );
 }
 
 .content {
   position: relative;
   z-index: 2;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
   height: 100%;
   max-width: 100%;
   padding: 0 clamp(24px, 6vw, 80px);
@@ -64,6 +78,14 @@
   transform: translateY(0);
 }
 
+.glass {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: 100%;
+}
+
 .badge {
   padding: 6px 14px;
   border-radius: 999px;
@@ -74,6 +96,7 @@
   letter-spacing: 0.4px;
   text-transform: uppercase;
   white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(122, 193, 67, 0.45);
 }
 
 .title {
@@ -82,13 +105,14 @@
   font-weight: 700;
   line-height: 1.12;
   white-space: nowrap;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
 .text {
   margin: 0;
   font-size: clamp(12px, 1.4vw, 18px);
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .button {
@@ -200,12 +224,32 @@
       rgba(0, 0, 0, 0.25) 70%,
       rgba(0, 0, 0, 0.1) 100%
     );
+    -webkit-backdrop-filter: blur(4px) saturate(115%);
+    backdrop-filter: blur(4px) saturate(115%);
+    -webkit-mask-image: linear-gradient(
+      0deg,
+      #000 0%,
+      rgba(0, 0, 0, 0.7) 55%,
+      rgba(0, 0, 0, 0.2) 85%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      0deg,
+      #000 0%,
+      rgba(0, 0, 0, 0.7) 55%,
+      rgba(0, 0, 0, 0.2) 85%,
+      transparent 100%
+    );
   }
 
   .content {
-    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 0 16px 56px;
+  }
+
+  .glass {
+    width: 100%;
     gap: 12px;
-    padding-bottom: 64px;
   }
 
   .title {

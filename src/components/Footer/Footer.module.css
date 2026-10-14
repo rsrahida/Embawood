@@ -1,0 +1,223 @@
+.footer {
+  position: relative;
+  margin-top: 72px;
+  background: #fafafa;
+  color: #1c1c1c;
+}
+
+.leaves {
+  position: absolute;
+  top: -52px;
+  right: clamp(0px, 4vw, 64px);
+  z-index: 0;
+  width: 300px;
+  height: 212px;
+  pointer-events: none;
+}
+
+.leafLight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 212px;
+  height: auto;
+}
+
+.leafDark {
+  position: absolute;
+  top: 52px;
+  right: 92px;
+  width: 212px;
+  height: auto;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: min(100% - 96px, 1180px);
+  margin: 0 auto;
+  padding: 56px 0 0;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 1fr 1fr;
+  gap: 32px;
+  padding-bottom: 36px;
+}
+
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+}
+
+.socialIcon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  color: #a3a3a3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  transition:
+    color 0.25s ease,
+    background 0.25s ease;
+}
+
+.socialIcon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.socialIcon:hover {
+  background: #7ac143;
+  color: #fff;
+}
+
+.column {
+  min-width: 0;
+}
+
+.heading {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #1c1c1c;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #1c1c1c;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: #5aa22c;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #1c1c1c;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contactItem svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: #a3a3a3;
+  transition: color 0.2s ease;
+}
+
+.contactItem:hover,
+.contactItem:hover svg {
+  color: #5aa22c;
+}
+
+.link:focus-visible,
+.contactItem:focus-visible,
+.socialIcon:focus-visible {
+  outline: 2px solid #7ac143;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 0 22px;
+  border-top: 1px solid #ececec;
+}
+
+.copy {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #7a7a7a;
+}
+
+.payments {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.payments img {
+  display: block;
+  height: 26px;
+  width: auto;
+}
+
+@media (max-width: 1024px) {
+  .main {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .socials {
+    grid-column: 1 / -1;
+  }
+
+  .leaves {
+    transform: scale(0.8);
+    transform-origin: top right;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    margin-top: 56px;
+  }
+
+  .inner {
+    width: calc(100% - 40px);
+    padding-top: 40px;
+  }
+
+  .main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 20px;
+  }
+
+  .leaves {
+    top: -36px;
+    transform: scale(0.55);
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .leaves {
+    transform: scale(0.42);
+  }
+
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -21,26 +21,27 @@ import { useLanguage } from "../../context/LanguageContext";
 import logo from "../../assets/logo.svg";
 import styles from "./Navbar.module.css";
 
+// Sosial ikonlar statikdir (link yoxdur)
 const socialLinks = [
   {
     name: "Facebook",
     icon: FaFacebookF,
-    url: "https://www.facebook.com/",
   },
   {
     name: "Instagram",
     icon: FaInstagram,
-    url: "https://www.instagram.com/",
   },
   {
     name: "YouTube",
     icon: FaYoutube,
-    url: "https://www.youtube.com/",
   },
   {
     name: "LinkedIn",
     icon: FaLinkedinIn,
-    url: "https://www.linkedin.com/",
+  },
+  {
+    name: "WhatsApp",
+    icon: FaWhatsapp,
   },
 ];
 
@@ -166,18 +167,15 @@ const Navbar = () => {
           </button>
         </form>
         <div className={styles.navbarSocials}>
-          {socialLinks.map(({ name, icon: Icon, url }) => (
-            <a
+          {socialLinks.map(({ name, icon: Icon }) => (
+            <span
               key={name}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
               className={styles.socialIcon}
+              role="img"
               aria-label={name}
-              title={name}
             >
-              <Icon />
-            </a>
+              <Icon aria-hidden="true" />
+            </span>
           ))}
         </div>
         <div className={styles.navbarActions}>
@@ -312,17 +310,10 @@ const Navbar = () => {
             </div>
           </div>
           <div className={styles.drawerSocials}>
-            {socialLinks.map(({ name, icon: Icon, url }) => (
-              <a
-                key={name}
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={name}
-                title={name}
-              >
-                <Icon />
-              </a>
+            {socialLinks.map(({ name, icon: Icon }) => (
+              <span key={name} role="img" aria-label={name}>
+                <Icon aria-hidden="true" />
+              </span>
             ))}
           </div>
         </div>
