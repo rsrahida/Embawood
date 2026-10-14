@@ -1,0 +1,291 @@
+.card {
+  --green: #64b043;
+  --green-dark: #529a35;
+  --text: #1c1c1c;
+  --muted: #8a8a8a;
+  --border: #e6e6e6;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- Şəkil ---------- */
+.media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #f3f3f3;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 6px;
+}
+
+.discountBadge,
+.newBadge {
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--green);
+}
+
+.newBadge {
+  background: #1c1c1c;
+}
+
+.wishlistFloat {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  color: #444;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.wishlistFloat:hover {
+  color: #d63b3b;
+  transform: scale(1.06);
+}
+
+.stockLabel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.outOfStock .image {
+  filter: grayscale(0.6);
+  opacity: 0.8;
+}
+
+/* ---------- Məzmun ---------- */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 14px 16px;
+}
+
+.name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+}
+
+/* Adın üzərindəki link bütün kartı əhatə edir */
+.link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 14px;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.link:focus-visible::after {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.card:has(.link) {
+  cursor: pointer;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.star {
+  display: inline-flex;
+  color: var(--green);
+}
+
+.ratingValue {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.reviews {
+  color: var(--muted);
+}
+
+.prices {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.price {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--green);
+}
+
+.oldPrice {
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+/* ---------- Düymələr ---------- */
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.wishlistBtn {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: #444;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.wishlistBtn:hover {
+  color: #d63b3b;
+  border-color: #d63b3b;
+}
+
+.cartBtn {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 10px;
+  background: var(--green);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.cartBtn:hover:not(:disabled) {
+  background: var(--green-dark);
+}
+
+.cartBtn:disabled {
+  background: #c9c9c9;
+  cursor: not-allowed;
+}
+
+.wishlistFloat:focus-visible,
+.wishlistBtn:focus-visible,
+.cartBtn:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* ---------- Skeleton ---------- */
+.skeleton {
+  background: linear-gradient(90deg, #eeeeee 25%, #f8f8f8 37%, #eeeeee 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.skeletonLine {
+  border-radius: 6px;
+}
+
+.skeletonSquare {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+}
+
+.skeletonBtn {
+  flex: 1;
+  height: 46px;
+  border-radius: 10px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

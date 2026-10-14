@@ -306,7 +306,7 @@ export const products = [
     bedTypeEn: "King size",
     warrantyAz: "3 il",
     warrantyEn: "3 years",
-    rating: 4.9,
+    rating: 2.9,
     reviewsCount: 29,
     isNew: false,
     descriptionAz:

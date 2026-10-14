@@ -7,11 +7,11 @@
 
 .leaves {
   position: absolute;
-  top: -52px;
+  top: -70px;
   right: clamp(0px, 4vw, 64px);
   z-index: 0;
-  width: 300px;
-  height: 212px;
+  width: 250px;
+  height: 190px;
   pointer-events: none;
 }
 
