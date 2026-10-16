@@ -1,0 +1,219 @@
+.wrap {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.toast {
+  --accent: #6cb944;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(360px, calc(100vw - 32px));
+  padding: 14px 16px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fff;
+  color: #1f2a24;
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.16),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+  pointer-events: auto;
+  animation: slideIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+.success {
+  --accent: #6cb944;
+}
+
+.danger {
+  --accent: #e2483d;
+}
+
+.info {
+  --accent: #3b82f6;
+}
+
+.thumb {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #f6f8f6;
+}
+
+.statusBadge {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  animation: pop 0.4s 0.15s cubic-bezier(0.2, 0.9, 0.3, 1.6) both;
+}
+
+.iconCircle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  animation: pop 0.4s 0.1s cubic-bezier(0.2, 0.9, 0.3, 1.6) both;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.message {
+  margin: 0;
+  overflow: hidden;
+  font-size: 13px;
+  color: #5d6862;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action {
+  margin-top: 4px;
+  width: fit-content;
+  font-size: 13px;
+  font-weight: 600;
+  color: #00663a;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.action:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+.close {
+  align-self: flex-start;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #9aa39e;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.close:hover {
+  background: #f1f3f2;
+  color: #1f2a24;
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  animation-name: progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .wrap {
+    top: auto;
+    bottom: 16px;
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  .toast {
+    animation-name: slideUp;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .statusBadge,
+  .iconCircle {
+    animation: none;
+  }
+}

@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLanguage } from "../../../../context/LanguageContext";
 import styles from "./BedFilters.module.css";
 import {
   COLOR_HEX,
   RATING_OPTIONS,
   countActive,
+  createLabeler,
   getFacets,
   getPriceBounds,
 } from "./filterUtils";
@@ -12,9 +14,9 @@ const CURRENCY = "₼";
 const PRICE_STEP = 10;
 
 const QUICK = [
-  { key: "inStockOnly", label: "Stokda var" },
-  { key: "discountOnly", label: "Endirimli" },
-  { key: "newOnly", label: "Yeni" },
+  { key: "inStockOnly", labelKey: "fInStock" },
+  { key: "discountOnly", labelKey: "fSale" },
+  { key: "newOnly", labelKey: "fNew" },
 ];
 
 const Icon = ({ children, size = 16, stroke = 2 }) => (
@@ -121,10 +123,15 @@ const BedFilters = ({
   isOpen = false,
   onClose = () => {},
 }) => {
+  const { t, lang } = useLanguage();
   const bounds = useMemo(() => getPriceBounds(products), [products]);
   const facets = useMemo(
     () => getFacets(products, filters),
     [products, filters],
+  );
+  const labeler = useMemo(
+    () => createLabeler(products, lang),
+    [products, lang],
   );
   const activeCount = countActive(filters, bounds);
   const update = (patch) => onChange({ ...filters, ...patch });
@@ -160,28 +167,32 @@ const BedFilters = ({
       clear: () => update({ price: [bounds.min, bounds.max] }),
     });
   }
-  const listTags = (key) =>
+  const listTags = (key, format = (v) => v) =>
     filters[key].forEach((v) =>
       tags.push({
         id: `${key}:${v}`,
-        label: v,
+        label: format(v),
         clear: () => update({ [key]: filters[key].filter((x) => x !== v) }),
       }),
     );
-  listTags("sizes");
-  listTags("bedTypes");
-  listTags("colors");
+  listTags("sizes", labeler.size);
+  listTags("bedTypes", labeler.bedType);
+  listTags("colors", labeler.color);
   listTags("brands");
   if (filters.minRating) {
     tags.push({
       id: "rating",
-      label: `${filters.minRating}+ reytinq`,
+      label: t("fRatingTag", { n: filters.minRating }),
       clear: () => update({ minRating: 0 }),
     });
   }
-  QUICK.forEach(({ key, label }) => {
+  QUICK.forEach(({ key, labelKey }) => {
     if (filters[key])
-      tags.push({ id: key, label, clear: () => update({ [key]: false }) });
+      tags.push({
+        id: key,
+        label: t(labelKey),
+        clear: () => update({ [key]: false }),
+      });
   });
 
   return (
@@ -192,7 +203,7 @@ const BedFilters = ({
 
       <div className={`${styles.panel} ${isOpen ? styles.panelOpen : ""}`}>
         <header className={styles.header}>
-          <h2 className={styles.heading}>Filtrlər</h2>
+          <h2 className={styles.heading}>{t("fTitle")}</h2>
           <div className={styles.headActions}>
             {activeCount > 0 && (
               <button
@@ -200,14 +211,14 @@ const BedFilters = ({
                 className={styles.resetBtn}
                 onClick={onReset}
               >
-                Hamısını sil
+                {t("fClearAll")}
               </button>
             )}
             <button
               type="button"
               className={styles.closeBtn}
               onClick={onClose}
-              aria-label="Filtrləri bağla"
+              aria-label={t("fClose")}
             >
               <CloseIcon />
             </button>
@@ -215,7 +226,7 @@ const BedFilters = ({
         </header>
         <div className={styles.scroll}>
           <div className={styles.quick}>
-            {QUICK.map(({ key, label }) => (
+            {QUICK.map(({ key, labelKey }) => (
               <button
                 key={key}
                 type="button"
@@ -223,28 +234,28 @@ const BedFilters = ({
                 className={`${styles.quickBtn} ${filters[key] ? styles.quickOn : ""}`}
                 onClick={() => update({ [key]: !filters[key] })}
               >
-                {label}
+                {t(labelKey)}
               </button>
             ))}
           </div>
           {tags.length > 0 && (
-            <ul className={styles.tags} aria-label="Seçilmiş filtrlər">
-              {tags.map((t) => (
-                <li key={t.id}>
+            <ul className={styles.tags} aria-label={t("fSelected")}>
+              {tags.map((tag) => (
+                <li key={tag.id}>
                   <button
                     type="button"
                     className={styles.tag}
-                    onClick={t.clear}
-                    aria-label={`${t.label} filtrini sil`}
+                    onClick={tag.clear}
+                    aria-label={t("fRemove", { label: tag.label })}
                   >
-                    {t.label}
+                    {tag.label}
                     <CloseIcon size={12} />
                   </button>
                 </li>
               ))}
             </ul>
           )}
-          <Section title="Ölçü" badge={filters.sizes.length}>
+          <Section title={t("fSize")} badge={filters.sizes.length}>
             <div className={styles.sizes}>
               {facets.sizes.map(({ value, count }) => {
                 const active = filters.sizes.includes(value);
@@ -259,19 +270,21 @@ const BedFilters = ({
                       update({ sizes: toggleIn(filters.sizes, value) })
                     }
                   >
-                    <span className={styles.sizeValue}>{value}</span>
+                    <span className={styles.sizeValue}>
+                      {labeler.size(value)}
+                    </span>
                     <span className={styles.sizeCount}>{count}</span>
                   </button>
                 );
               })}
             </div>
           </Section>
-          <Section title="Çarpayı növü" badge={filters.bedTypes.length}>
+          <Section title={t("fBedType")} badge={filters.bedTypes.length}>
             <div className={styles.list}>
               {facets.bedTypes.map(({ value, count }) => (
                 <Row
                   key={value}
-                  label={value}
+                  label={labeler.bedType(value)}
                   count={count}
                   checked={filters.bedTypes.includes(value)}
                   onChange={() =>
@@ -282,7 +295,7 @@ const BedFilters = ({
             </div>
           </Section>
           <Section
-            title="Qiymət"
+            title={t("price")}
             badge={lo !== bounds.min || hi !== bounds.max ? 1 : 0}
           >
             <div className={styles.range}>
@@ -306,7 +319,7 @@ const BedFilters = ({
                     ],
                   })
                 }
-                aria-label="Minimum qiymət"
+                aria-label={t("fMinPrice")}
               />
               <input
                 type="range"
@@ -323,12 +336,12 @@ const BedFilters = ({
                     ],
                   })
                 }
-                aria-label="Maksimum qiymət"
+                aria-label={t("fMaxPrice")}
               />
             </div>
             <div className={styles.priceInputs}>
               <label className={styles.priceField}>
-                <span className={styles.srOnly}>Minimum qiymət</span>
+                <span className={styles.srOnly}>{t("fMinPrice")}</span>
                 <input
                   type="number"
                   inputMode="numeric"
@@ -344,7 +357,7 @@ const BedFilters = ({
               </label>
               <span className={styles.priceDash}>–</span>
               <label className={styles.priceField}>
-                <span className={styles.srOnly}>Maksimum qiymət</span>
+                <span className={styles.srOnly}>{t("fMaxPrice")}</span>
                 <input
                   type="number"
                   inputMode="numeric"
@@ -360,7 +373,7 @@ const BedFilters = ({
               </label>
             </div>
           </Section>
-          <Section title="Rəng" badge={filters.colors.length}>
+          <Section title={t("fColor")} badge={filters.colors.length}>
             <div className={styles.swatches}>
               {facets.colors.map(({ value, count }) => {
                 const active = filters.colors.includes(value);
@@ -379,17 +392,15 @@ const BedFilters = ({
                       className={styles.swatch}
                       style={{ background: COLOR_HEX[value] || "#cccccc" }}
                     />
-                    <span className={styles.swatchName}>{value}</span>
+                    <span className={styles.swatchName}>
+                      {labeler.color(value)}
+                    </span>
                   </button>
                 );
               })}
             </div>
           </Section>
-          <Section
-            title="Brend"
-            badge={filters.brands.length}
-            defaultOpen={false}
-          >
+          <Section title={t("fBrand")} badge={filters.brands.length}>
             <div className={styles.list}>
               {facets.brands.map(({ value, count }) => (
                 <Row
@@ -404,15 +415,11 @@ const BedFilters = ({
               ))}
             </div>
           </Section>
-          <Section
-            title="Reytinq"
-            badge={filters.minRating ? 1 : 0}
-            defaultOpen={false}
-          >
+          <Section title={t("fRating")} badge={filters.minRating ? 1 : 0}>
             <div
               className={styles.ratings}
               role="radiogroup"
-              aria-label="Minimum reytinq"
+              aria-label={t("fMinRating")}
             >
               {RATING_OPTIONS.map((r) => {
                 const active = filters.minRating === r;
@@ -435,7 +442,7 @@ const BedFilters = ({
         </div>
         <footer className={styles.footer}>
           <button type="button" className={styles.applyBtn} onClick={onClose}>
-            {resultCount} məhsula bax
+            {t("fShow", { n: resultCount })}
           </button>
         </footer>
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   Search,
@@ -18,31 +18,21 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { useLanguage } from "../../context/LanguageContext";
+import { useWishlist } from "../../context/WishlistContext";
+import products from "../../data/products";
+import { searchProducts } from "../../utils/searchProducts";
 import logo from "../../assets/logo.svg";
 import styles from "./Navbar.module.css";
 
-// Sosial ikonlar statikdir (link yoxdur)
+const CURRENCY = "₼";
+const MAX_SUGGESTIONS = 6;
+
 const socialLinks = [
-  {
-    name: "Facebook",
-    icon: FaFacebookF,
-  },
-  {
-    name: "Instagram",
-    icon: FaInstagram,
-  },
-  {
-    name: "YouTube",
-    icon: FaYoutube,
-  },
-  {
-    name: "LinkedIn",
-    icon: FaLinkedinIn,
-  },
-  {
-    name: "WhatsApp",
-    icon: FaWhatsapp,
-  },
+  { name: "Facebook", icon: FaFacebookF },
+  { name: "Instagram", icon: FaInstagram },
+  { name: "YouTube", icon: FaYoutube },
+  { name: "LinkedIn", icon: FaLinkedinIn },
+  { name: "WhatsApp", icon: FaWhatsapp },
 ];
 
 const topLinks = [
@@ -60,19 +50,42 @@ const categories = [
 ];
 
 const Navbar = () => {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage, lang, t } = useLanguage();
+  const { count: wishlistCount } = useWishlist();
   const [search, setSearch] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const [menuOpen, setMenuOpen] = useState(false);
+  const searchRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const cartCount = 0;
+  const isAz = lang === "az";
 
+  const withLang = (path = "") => `/${lang}${path === "/" ? "" : path}`;
   const closeMenu = () => {
     setMenuOpen(false);
   };
+
+  const query = search.trim();
+
+  const suggestions = useMemo(
+    () => (query ? searchProducts(products, query, MAX_SUGGESTIONS) : []),
+    [query],
+  );
+  const totalMatches = useMemo(
+    () => (query ? searchProducts(products, query).length : 0),
+    [query],
+  );
+
+  const showDropdown = searchOpen && query.length > 0;
+
   useEffect(() => {
     setMenuOpen(false);
+    setSearchOpen(false);
+    setActiveIndex(-1);
   }, [location.pathname]);
+
   useEffect(() => {
     if (!menuOpen) return undefined;
 
@@ -94,11 +107,66 @@ const Navbar = () => {
     };
   }, [menuOpen]);
 
+  useEffect(() => {
+    if (!searchOpen) return undefined;
+
+    const handleOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchOpen(false);
+        setActiveIndex(-1);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutside);
+    document.addEventListener("touchstart", handleOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("touchstart", handleOutside);
+    };
+  }, [searchOpen]);
+
+  const closeSearch = () => {
+    setSearchOpen(false);
+    setActiveIndex(-1);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+    setSearchOpen(true);
+    setActiveIndex(-1);
+  };
+
+  const handleSearchKeyDown = (event) => {
+    if (event.key === "Escape") {
+      closeSearch();
+      return;
+    }
+
+    if (!showDropdown || suggestions.length === 0) return;
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActiveIndex((i) => (i + 1) % suggestions.length);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveIndex((i) => (i <= 0 ? suggestions.length - 1 : i - 1));
+    }
+  };
+
   const handleSearch = (event) => {
     event.preventDefault();
-    const query = search.trim();
     if (!query) return;
-    navigate(`/?search=${encodeURIComponent(query)}`);
+
+    const selected = suggestions[activeIndex];
+
+    if (selected) {
+      navigate(withLang(`/product/${selected.id}`));
+    } else {
+      navigate(`${withLang("/search")}?q=${encodeURIComponent(query)}`);
+    }
+
+    closeSearch();
     setMenuOpen(false);
   };
 
@@ -112,7 +180,7 @@ const Navbar = () => {
       <div className={styles.navbarTop}>
         <nav className={styles.navbarTopLinks}>
           {topLinks.map(({ key, path }) => (
-            <Link key={path} to={path}>
+            <Link key={path} to={withLang(path)}>
               {t(key)}
             </Link>
           ))}
@@ -151,20 +219,96 @@ const Navbar = () => {
         >
           <Menu />
         </button>
-        <Link to="/" className={styles.navbarLogo} aria-label={t("home")}>
+        <Link
+          to={withLang("/")}
+          className={styles.navbarLogo}
+          aria-label={t("home")}
+        >
           <img src={logo} alt="Embawood" />
         </Link>
-        <form className={styles.navbarSearch} onSubmit={handleSearch}>
+        <form
+          ref={searchRef}
+          className={styles.navbarSearch}
+          onSubmit={handleSearch}
+          role="search"
+        >
           <input
             type="search"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={handleSearchChange}
+            onFocus={() => setSearchOpen(true)}
+            onKeyDown={handleSearchKeyDown}
             placeholder={t("placeholder")}
             aria-label={t("placeholder")}
+            autoComplete="off"
+            aria-expanded={showDropdown}
+            aria-controls="search-suggestions"
           />
           <button type="submit" aria-label={t("search")}>
             <Search />
           </button>
+
+          {showDropdown && (
+            <div
+              id="search-suggestions"
+              className={styles.searchDropdown}
+              role="listbox"
+            >
+              {suggestions.length === 0 ? (
+                <p className={styles.searchEmpty}>
+                  {t("searchNoResults")} “{query}”
+                </p>
+              ) : (
+                <>
+                  <ul className={styles.searchList}>
+                    {suggestions.map((product, index) => {
+                      const name = isAz ? product.nameAz : product.nameEn;
+                      const category = isAz
+                        ? product.categoryNameAz
+                        : product.categoryNameEn;
+
+                      return (
+                        <li key={product.id} role="option">
+                          <Link
+                            to={withLang(`/product/${product.id}`)}
+                            className={`${styles.searchItem} ${
+                              index === activeIndex
+                                ? styles.searchItemActive
+                                : ""
+                            }`}
+                            onMouseEnter={() => setActiveIndex(index)}
+                            onClick={closeSearch}
+                          >
+                            <img
+                              src={product.image}
+                              alt=""
+                              className={styles.searchThumb}
+                            />
+                            <span className={styles.searchInfo}>
+                              <span className={styles.searchName}>{name}</span>
+                              <span className={styles.searchCategory}>
+                                {category}
+                              </span>
+                            </span>
+                            <span className={styles.searchPrice}>
+                              {product.price} {CURRENCY}
+                            </span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <Link
+                    to={`${withLang("/search")}?q=${encodeURIComponent(query)}`}
+                    className={styles.searchAll}
+                    onClick={closeSearch}
+                  >
+                    {t("searchViewAll")} ({totalMatches}) →
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
         </form>
         <div className={styles.navbarSocials}>
           {socialLinks.map(({ name, icon: Icon }) => (
@@ -180,7 +324,7 @@ const Navbar = () => {
         </div>
         <div className={styles.navbarActions}>
           <Link
-            to="/login"
+            to={withLang("/login")}
             className={styles.navbarAction}
             title={t("account")}
             aria-label={t("account")}
@@ -188,15 +332,18 @@ const Navbar = () => {
             <UserRound />
           </Link>
           <Link
-            to="/wishlist"
-            className={styles.navbarAction}
+            to={withLang("/wishlist")}
+            className={`${styles.navbarAction} ${styles.cartAction}`}
             title={t("wishlist")}
             aria-label={t("wishlist")}
           >
             <Heart />
+            {wishlistCount > 0 && (
+              <span className={styles.cartBadge}>{wishlistCount}</span>
+            )}
           </Link>
           <Link
-            to="/cart"
+            to={withLang("/cart")}
             className={`${styles.navbarAction} ${styles.cartAction}`}
             title={t("cart")}
             aria-label={t("cart")}
@@ -213,7 +360,7 @@ const Navbar = () => {
           {categories.map(({ key, path }) => (
             <li key={path}>
               <NavLink
-                to={path}
+                to={withLang(path)}
                 end
                 className={categoryClass(
                   styles.categoryLink,
@@ -241,7 +388,7 @@ const Navbar = () => {
       >
         <div className={styles.drawerHeader}>
           <Link
-            to="/"
+            to={withLang("/")}
             className={styles.drawerLogo}
             aria-label={t("home")}
             onClick={closeMenu}
@@ -263,7 +410,7 @@ const Navbar = () => {
             {categories.map(({ key, path }) => (
               <li key={path}>
                 <NavLink
-                  to={path}
+                  to={withLang(path)}
                   end
                   onClick={closeMenu}
                   className={categoryClass(
@@ -280,7 +427,7 @@ const Navbar = () => {
             {topLinks.map(({ key, path }) => (
               <li key={path}>
                 <NavLink
-                  to={path}
+                  to={withLang(path)}
                   onClick={closeMenu}
                   className={categoryClass(
                     styles.drawerLink,

@@ -1,15 +1,9 @@
 .page {
   --sticky-top: 16px;
+  --page-pad: 16px;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 32px 16px;
-}
-
-.title {
-  margin: 0 0 24px;
-  font-size: 20px;
-  text-align: center;
-  margin-left: -15px;
+  padding: 32px var(--page-pad);
 }
 
 .layout {
@@ -20,8 +14,6 @@
 }
 
 .sidebar {
-  position: sticky;
-  top: var(--sticky-top);
   align-self: start;
 }
 
@@ -47,6 +39,7 @@
   margin: 0;
   font-size: 15px;
   color: #727a6d;
+  white-space: nowrap;
 }
 
 .resultCount strong {
@@ -76,6 +69,9 @@
   font-weight: 500;
   color: #1c2619;
   cursor: pointer;
+  min-width: 0;
+  max-width: 100%;
+  text-overflow: ellipsis;
 }
 
 .sortSelect:focus {
@@ -157,11 +153,16 @@
 
 @media (max-width: 900px) {
   .page {
-    padding: 20px 12px;
+    --page-pad: 12px;
+    padding: 20px var(--page-pad);
+  }
+
+  .title {
+    margin: 0 0 16px;
   }
 
   .layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0;
   }
 
@@ -173,14 +174,19 @@
     position: sticky;
     top: var(--sticky-top);
     z-index: 20;
-    margin: 0 -12px 16px;
-    padding: 10px 12px;
+    margin: 0 calc(var(--page-pad) * -1) 16px;
+    padding: 10px var(--page-pad);
     background: rgba(255, 255, 255, 0.96);
     border-bottom: 1px solid #e7eae3;
   }
 
   .filterToggle {
     display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  .sort {
+    min-width: 0;
   }
 
   .sortLabel {
@@ -190,5 +196,55 @@
   .grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .toolbar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "count count"
+      "filter sort";
+    gap: 6px 10px;
+    align-items: center;
+  }
+
+  .resultCount {
+    grid-area: count;
+    font-size: 13px;
+  }
+
+  .filterToggle {
+    grid-area: filter;
+  }
+
+  .sort {
+    grid-area: sort;
+    margin-left: 0;
+  }
+
+  .sortSelect {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .page {
+    --page-pad: 10px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .filterToggle {
+    padding: 0 12px;
+  }
+
+  .sortSelect {
+    padding-left: 10px;
+    font-size: 13.5px;
   }
 }

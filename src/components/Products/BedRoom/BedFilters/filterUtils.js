@@ -1,29 +1,56 @@
 export const COLOR_HEX = {
-  Qəhvəyi: "#6b4a3a",
-  Krem: "#efe3cf",
-  Bej: "#d9c3a5",
-  Ağ: "#ffffff",
-  "Kərpic qırmızısı": "#a8452b",
-  Qara: "#1d1d1d",
-  "Boz-mavi": "#7d8fa0",
-  "Tünd mavi": "#1f3a5f",
+  Brown: "#7a5a3a",
+  Cream: "#efe3cf",
+  Beige: "#d9c3a5",
+  White: "#ffffff",
+  "Brick red": "#a8472f",
+  Black: "#1c1c1c",
+  "Grey-blue": "#7d8fa0",
 };
 
 export const RATING_OPTIONS = [4.5, 4, 3.5];
 
 export const SORT_OPTIONS = [
-  { value: "default", label: "Standart" },
-  { value: "price-asc", label: "Qiymət: ucuzdan bahaya" },
-  { value: "price-desc", label: "Qiymət: bahadan ucuza" },
-  { value: "rating", label: "Ən yüksək reytinq" },
-  { value: "discount", label: "Ən böyük endirim" },
+  { value: "default", labelKey: "sortDefault" },
+  { value: "price-asc", labelKey: "sortPriceAsc" },
+  { value: "price-desc", labelKey: "sortPriceDesc" },
+  { value: "rating", labelKey: "sortRating" },
+  { value: "discount", labelKey: "sortDiscount" },
 ];
 
-export const splitColors = (colorAz = "") =>
-  colorAz
+const splitParts = (value = "") =>
+  value
     .split("/")
     .map((s) => s.trim())
     .filter(Boolean);
+
+export const getColorKeys = (p) => splitParts(p.colorEn);
+export const getSizeKey = (p) =>
+  (p.dimensionsEn || "").replace(/\s*cm$/i, "").trim();
+export const getBedTypeKey = (p) => p.bedTypeEn;
+export const createLabeler = (products, lang) => {
+  const colors = new Map();
+  const bedTypes = new Map();
+
+  products.forEach((p) => {
+    const en = splitParts(p.colorEn);
+    const az = splitParts(p.colorAz);
+    en.forEach((key, i) => {
+      if (!colors.has(key)) colors.set(key, { az: az[i] ?? key, en: key });
+    });
+    if (!bedTypes.has(p.bedTypeEn)) {
+      bedTypes.set(p.bedTypeEn, { az: p.bedTypeAz, en: p.bedTypeEn });
+    }
+  });
+
+  const pick = (entry, fallback) => entry?.[lang] ?? fallback;
+
+  return {
+    color: (key) => pick(colors.get(key), key),
+    bedType: (key) => pick(bedTypes.get(key), key),
+    size: (key) => `${key} ${lang === "az" ? "sm" : "cm"}`,
+  };
+};
 
 export const getPriceBounds = (products) => {
   if (!products.length) return { min: 0, max: 0 };
@@ -39,8 +66,8 @@ export const getDefaultFilters = (products) => {
   return {
     price: [min, max],
     brands: [],
-    bedTypes: [],
     sizes: [],
+    bedTypes: [],
     colors: [],
     minRating: 0,
     inStockOnly: false,
@@ -56,20 +83,34 @@ const countBy = (items, getKeys) => {
   });
   return [...map.entries()]
     .map(([value, count]) => ({ value, count }))
-    .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value));
+    .sort(
+      (a, b) =>
+        b.count - a.count || String(a.value).localeCompare(String(b.value)),
+    );
+};
+
+const sizeNums = (s) =>
+  String(s)
+    .split("x")
+    .map((n) => Number(n) || 0);
+const compareSize = (a, b) => {
+  const [a1, a2] = sizeNums(a.value);
+  const [b1, b2] = sizeNums(b.value);
+  return a1 - b1 || a2 - b2;
 };
 
 const FACET_GROUPS = {
   brands: (p) => [p.brand],
-  bedTypes: (p) => [p.bedTypeAz],
-  sizes: (p) => [p.dimensionsAz],
-  colors: (p) => splitColors(p.colorAz),
+  sizes: (p) => [getSizeKey(p)],
+  bedTypes: (p) => [getBedTypeKey(p)],
+  colors: (p) => getColorKeys(p),
 };
 
 export const getFacets = (products, filters = getDefaultFilters(products)) => {
   const result = {};
   Object.entries(FACET_GROUPS).forEach(([key, getKeys]) => {
     const order = countBy(products, getKeys); // sabit sıra üçün
+    if (key === "sizes") order.sort(compareSize);
     const base = applyFilters(products, { ...filters, [key]: [] });
     const counts = new Map(
       countBy(base, getKeys).map((o) => [o.value, o.count]),
@@ -86,12 +127,10 @@ export const applyFilters = (products, f) =>
   products.filter((p) => {
     if (p.price < f.price[0] || p.price > f.price[1]) return false;
     if (f.brands.length && !f.brands.includes(p.brand)) return false;
-    if (f.bedTypes.length && !f.bedTypes.includes(p.bedTypeAz)) return false;
-    if (f.sizes.length && !f.sizes.includes(p.dimensionsAz)) return false;
-    if (
-      f.colors.length &&
-      !splitColors(p.colorAz).some((c) => f.colors.includes(c))
-    )
+    if (f.sizes.length && !f.sizes.includes(getSizeKey(p))) return false;
+    if (f.bedTypes.length && !f.bedTypes.includes(getBedTypeKey(p)))
+      return false;
+    if (f.colors.length && !getColorKeys(p).some((c) => f.colors.includes(c)))
       return false;
     if (f.minRating && p.rating < f.minRating) return false;
     if (f.inStockOnly && !p.inStock) return false;
@@ -121,19 +160,15 @@ export const sortProducts = (products, sort) => {
 export const countActive = (f, bounds) =>
   (f.price[0] !== bounds.min || f.price[1] !== bounds.max ? 1 : 0) +
   f.brands.length +
-  f.bedTypes.length +
   f.sizes.length +
+  f.bedTypes.length +
   f.colors.length +
   (f.minRating ? 1 : 0) +
   (f.inStockOnly ? 1 : 0) +
   (f.discountOnly ? 1 : 0) +
   (f.newOnly ? 1 : 0);
 
-const sizeToParam = (v) =>
-  v
-    .replace(/\s*x\s*/gi, "x")
-    .replace(/\s*sm$/i, "")
-    .replace(/\s+/g, "");
+const sizeToParam = (v) => v.replace(/\s*x\s*/gi, "x").replace(/\s+/g, "");
 
 export const buildSearchParams = (filters, sort, products) => {
   const bounds = getPriceBounds(products);
@@ -145,16 +180,14 @@ export const buildSearchParams = (filters, sort, products) => {
     p.set("maxPrice", String(filters.price[1]));
 
   filters.brands.forEach((v) => p.append("brand", v));
-  filters.bedTypes.forEach((v) => p.append("type", v));
   filters.sizes.forEach((v) => p.append("size", sizeToParam(v)));
+  filters.bedTypes.forEach((v) => p.append("type", v));
   filters.colors.forEach((v) => p.append("color", v));
-
   if (filters.minRating) p.set("rating", String(filters.minRating));
   if (filters.inStockOnly) p.set("stock", "1");
   if (filters.discountOnly) p.set("sale", "1");
   if (filters.newOnly) p.set("new", "1");
   if (sort && sort !== "default") p.set("sort", sort);
-
   return p;
 };
 
@@ -194,8 +227,8 @@ export const parseSearchParams = (params, products) => {
     filters: {
       price: [lo, hi],
       brands: pick("brand", facets.brands),
-      bedTypes: pick("type", facets.bedTypes),
       sizes: pick("size", facets.sizes, sizeToParam),
+      bedTypes: pick("type", facets.bedTypes),
       colors: pick("color", facets.colors),
       minRating: RATING_OPTIONS.includes(rating) ? rating : 0,
       inStockOnly: params.get("stock") === "1",

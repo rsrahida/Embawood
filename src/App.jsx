@@ -13,6 +13,7 @@ import {
   SUPPORTED_LANGS,
   stripLangPrefix,
 } from "./context/LanguageContext";
+import { WishlistProvider } from "./context/WishlistContext";
 import Campaigns from "./components/Campaigns/Campaigns";
 import Cart from "./components/Cart/Cart";
 import HomePage from "./components/HomePage/HomePage";
@@ -27,6 +28,9 @@ import Wishlist from "./components/Wishlist/Wishlist";
 import AllProducts from "./components/Products/AllProducts/AllProducts";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 import Footer from "./components/Footer/Footer";
+import ProductsDetail from "./shared/components/ProductsDetail/ProductsDetail";
+import { ToastProvider } from "./shared/components/Toast/ToastProvider";
+import SearchResults from "./components/SearchResults/SearchResults";
 
 const RedirectToLang = () => {
   const { lang } = useLanguage();
@@ -58,23 +62,29 @@ const App = () => {
   return (
     <BrowserRouter>
       <LanguageProvider>
-        <Routes>
-          <Route path="/:lang" element={<LangLayout />}>
-            <Route index element={<HomePage />} />
-            <Route path="products" element={<AllProducts />} />
-            <Route path="products/bedroom" element={<BedRoom />} />
-            <Route path="products/living-room" element={<LivingRoom />} />
-            <Route path="products/mattresses" element={<Mattresses />} />
-            <Route path="products/tables" element={<Tables />} />
-            <Route path="campaigns" element={<Campaigns />} />
-            <Route path="cart" element={<Cart />} />
-            <Route path="room-builder" element={<RoomBuilder />} />
-            <Route path="shops" element={<Shops />} />
-            <Route path="wishlist" element={<Wishlist />} />
-          </Route>
-          <Route path="*" element={<RedirectToLang />} />
-        </Routes>
-        <ScrollToTop />
+        <ToastProvider>
+          <WishlistProvider>
+            <Routes>
+              <Route path="/:lang" element={<LangLayout />}>
+                <Route index element={<HomePage />} />
+                <Route path="products" element={<AllProducts />} />
+                <Route path="products/bedroom" element={<BedRoom />} />
+                <Route path="products/living-room" element={<LivingRoom />} />
+                <Route path="products/mattresses" element={<Mattresses />} />
+                <Route path="products/tables" element={<Tables />} />
+                <Route path="product/:id" element={<ProductsDetail />} />
+                <Route path="campaigns" element={<Campaigns />} />
+                <Route path="cart" element={<Cart />} />
+                <Route path="room-builder" element={<RoomBuilder />} />
+                <Route path="shops" element={<Shops />} />
+                <Route path="wishlist" element={<Wishlist />} />
+                <Route path="search" element={<SearchResults />} />
+              </Route>
+              <Route path="*" element={<RedirectToLang />} />
+            </Routes>
+            <ScrollToTop />
+          </WishlistProvider>
+        </ToastProvider>
       </LanguageProvider>
     </BrowserRouter>
   );
