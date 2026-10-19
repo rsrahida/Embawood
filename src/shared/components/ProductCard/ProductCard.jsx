@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "../../../context/LanguageContext";
 import { useWishlist } from "../../../context/WishlistContext";
+import { useCart } from "../../../context/CartContext";
+import { useToast } from "../Toast/ToastProvider";
+import { getCurrentUser } from "../../../utils/auth";
 import styles from "./ProductCard.module.css";
 
 const HeartIcon = ({ filled }) => (
@@ -84,6 +87,9 @@ const ProductCardSkeleton = () => (
 function ProductCard({ product, tabbable = true }) {
   const { lang, t, lp } = useLanguage();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { addToCart } = useCart();
+  const { showToast } = useToast();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -113,7 +119,32 @@ function ProductCard({ product, tabbable = true }) {
   const liked = isInWishlist(id);
   const hasDiscount = discount > 0 && oldPrice > price;
   const tab = tabbable ? 0 : -1;
-  const handleAddToCart = () => {};
+
+  const handleAddToCart = () => {
+    if (!inStock) return;
+    if (!getCurrentUser()) {
+      showToast({
+        variant: "info",
+        title: isAz ? "Hesabınıza daxil olun" : "Please log in",
+        message: isAz
+          ? "Məhsulu səbətə əlavə etmək üçün hesabınıza giriş edin."
+          : "Log in to your account to add products to your cart.",
+        actionLabel: isAz ? "Daxil ol" : "Log in",
+        actionTo: `${lp("/login")}?redirect=${encodeURIComponent(
+          location.pathname + location.search,
+        )}`,
+      });
+      return;
+    }
+
+    addToCart(product);
+    showToast({
+      variant: "success",
+      title: isAz ? "Səbətə əlavə olundu" : "Added to cart",
+      message: name,
+      image,
+    });
+  };
 
   return (
     <article className={`${styles.card} ${!inStock ? styles.outOfStock : ""}`}>

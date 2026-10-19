@@ -14,6 +14,7 @@ import {
   stripLangPrefix,
 } from "./context/LanguageContext";
 import { WishlistProvider } from "./context/WishlistContext";
+import { CartProvider } from "./context/CartContext";
 import Campaigns from "./components/Campaigns/Campaigns";
 import Cart from "./components/Cart/Cart";
 import HomePage from "./components/HomePage/HomePage";
@@ -31,6 +32,7 @@ import Footer from "./components/Footer/Footer";
 import ProductsDetail from "./shared/components/ProductsDetail/ProductsDetail";
 import { ToastProvider } from "./shared/components/Toast/ToastProvider";
 import SearchResults from "./components/SearchResults/SearchResults";
+import LoginRegister from "./components/LoginRegister/Loginregister";
 
 const RedirectToLang = () => {
   const { lang } = useLanguage();
@@ -64,25 +66,32 @@ const App = () => {
       <LanguageProvider>
         <ToastProvider>
           <WishlistProvider>
-            <Routes>
-              <Route path="/:lang" element={<LangLayout />}>
-                <Route index element={<HomePage />} />
-                <Route path="products" element={<AllProducts />} />
-                <Route path="products/bedroom" element={<BedRoom />} />
-                <Route path="products/living-room" element={<LivingRoom />} />
-                <Route path="products/mattresses" element={<Mattresses />} />
-                <Route path="products/tables" element={<Tables />} />
-                <Route path="product/:id" element={<ProductsDetail />} />
-                <Route path="campaigns" element={<Campaigns />} />
-                <Route path="cart" element={<Cart />} />
-                <Route path="room-builder" element={<RoomBuilder />} />
-                <Route path="shops" element={<Shops />} />
-                <Route path="wishlist" element={<Wishlist />} />
-                <Route path="search" element={<SearchResults />} />
-              </Route>
-              <Route path="*" element={<RedirectToLang />} />
-            </Routes>
-            <ScrollToTop />
+            <CartProvider>
+              <Routes>
+                <Route path="/:lang" element={<LangLayout />}>
+                  <Route index element={<HomePage />} />
+                  <Route path="products" element={<AllProducts />} />
+                  <Route path="products/bedroom" element={<BedRoom />} />
+                  <Route path="products/living-room" element={<LivingRoom />} />
+                  <Route path="products/mattresses" element={<Mattresses />} />
+                  <Route path="products/tables" element={<Tables />} />
+                  <Route path="product/:id" element={<ProductsDetail />} />
+                  <Route path="campaigns" element={<Campaigns />} />
+                  <Route path="cart" element={<Cart />} />
+                  <Route path="room-builder" element={<RoomBuilder />} />
+                  <Route path="shops" element={<Shops />} />
+                  <Route path="wishlist" element={<Wishlist />} />
+                  <Route path="search" element={<SearchResults />} />
+                  <Route path="login" element={<LoginRegister />} />
+                  <Route
+                    path="register"
+                    element={<LoginRegister initialMode="register" />}
+                  />
+                </Route>
+                <Route path="*" element={<RedirectToLang />} />
+              </Routes>
+              <ScrollToTop />
+            </CartProvider>
           </WishlistProvider>
         </ToastProvider>
       </LanguageProvider>

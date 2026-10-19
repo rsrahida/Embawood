@@ -1,7 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useLanguage } from "../../../context/LanguageContext";
 import { useWishlist } from "../../../context/WishlistContext";
+import { useCart } from "../../../context/CartContext";
+import { useToast } from "../Toast/ToastProvider";
+import { getCurrentUser } from "../../../utils/auth";
 import { products, getProductById } from "../../../data/products";
 import styles from "./ProductsDetail.module.css";
 
@@ -152,8 +155,11 @@ const formatMoney = (n) =>
 
 const ProductsDetail = () => {
   const { id } = useParams();
-  const { lang, t } = useLanguage();
+  const location = useLocation();
+  const { lang, t, lp } = useLanguage();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { items: cartItems, addToCart } = useCart();
+  const { showToast } = useToast();
   const isAz = lang === "az";
   const pick = (p, key) => (isAz ? p[`${key}Az`] : p[`${key}En`]);
   const product = getProductById(id);
@@ -165,6 +171,7 @@ const ProductsDetail = () => {
   const [tab, setTab] = useState("specs");
   const [justAdded, setJustAdded] = useState(false);
   const [term, setTerm] = useState(DEFAULT_TERM);
+  const addedTimer = useRef(null);
 
   useEffect(() => {
     setActiveImg(0);
@@ -175,6 +182,8 @@ const ProductsDetail = () => {
     setJustAdded(false);
     setTerm(DEFAULT_TERM);
   }, [id]);
+
+  useEffect(() => () => clearTimeout(addedTimer.current), []);
 
   const similar = useMemo(() => {
     if (!product) return [];
@@ -240,8 +249,45 @@ const ProductsDetail = () => {
 
   const handleAddToCart = () => {
     if (!product.inStock) return;
+
+    if (!getCurrentUser()) {
+      showToast({
+        variant: "info",
+        title: isAz ? "Hesabınıza daxil olun" : "Please log in",
+        message: isAz
+          ? "Məhsulu səbətə əlavə etmək üçün hesabınıza giriş edin."
+          : "Log in to your account to add products to your cart.",
+        actionLabel: isAz ? "Daxil ol" : "Log in",
+        actionTo: `${lp("/login")}?redirect=${encodeURIComponent(
+          location.pathname + location.search,
+        )}`,
+      });
+      return;
+    }
+
+    const inCart = cartItems.find((i) => i.id === product.id)?.qty || 0;
+    if (inCart + qty > product.stock) {
+      showToast({
+        variant: "danger",
+        title: isAz ? "Stok kifayət etmir" : "Not enough stock",
+        message: isAz
+          ? `Səbətdə artıq ${inCart} ədəd var. Maksimum ${product.stock} ədəd əlavə etmək olar.`
+          : `You already have ${inCart} in your cart. Maximum is ${product.stock}.`,
+      });
+      return;
+    }
+
+    addToCart(product, qty);
+    showToast({
+      variant: "success",
+      title: isAz ? "Səbətə əlavə olundu" : "Added to cart",
+      message: qty > 1 ? `${name} × ${qty}` : name,
+      image: product.image,
+    });
+
     setJustAdded(true);
-    setTimeout(() => setJustAdded(false), 1800);
+    clearTimeout(addedTimer.current);
+    addedTimer.current = setTimeout(() => setJustAdded(false), 1800);
   };
 
   const handleWish = () => {
@@ -534,4 +580,3 @@ const ProductsDetail = () => {
 };
 
 export default ProductsDetail;
-320;

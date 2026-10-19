@@ -241,16 +241,101 @@
   stroke-width: 1.6;
 }
 
-.cartBadge {
+.navbarAction.loggedIn {
+  padding: 6px;
+  color: #e53935;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+
+.accountWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.accountMenu {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  min-width: 16px;
-  color: #fff;
-  font-size: clamp(12px, 0.8vw, 14px);
+  top: calc(100% + 14px);
+  right: 0;
+  z-index: 70;
+  width: min(250px, 80vw);
+  padding: 8px;
+  border-radius: 16px;
+  background: #fff;
+  color: #1f2a24;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: searchIn 0.2s ease;
+}
+
+.accountMenu::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 18px;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+.accountInfo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid #e8ece9;
+  margin-bottom: 6px;
+}
+
+.accountName {
+  overflow: hidden;
+  font-size: 15px;
   font-weight: 700;
-  line-height: 1;
-  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accountEmail {
+  overflow: hidden;
+  color: #7b857f;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logoutBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #e53935;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.logoutBtn:hover {
+  background: #fdeaea;
+}
+
+.navbarAction.loggedIn svg {
+  width: clamp(20px, 1.5vw, 28px);
+  height: clamp(20px, 1.5vw, 28px);
+  stroke-width: 2;
 }
 
 .categoryBar {
@@ -476,6 +561,15 @@
     height: 25px;
   }
 
+  .navbarAction.loggedIn {
+    padding: 5px;
+  }
+
+  .navbarAction.loggedIn svg {
+    width: 21px;
+    height: 21px;
+  }
+
   .navbarSearch {
     position: relative;
     order: 3;
@@ -666,6 +760,55 @@
     position: absolute;
     right: 10px;
     pointer-events: none;
+  }
+
+  .drawerAccount {
+    margin: 18px 22px 0;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #f6f8f6;
+    border-radius: 14px;
+  }
+
+  .drawerAccountInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .drawerAccountName {
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .drawerAccountEmail {
+    overflow: hidden;
+    color: #7b857f;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .drawerLogout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    background: #e53935;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
   }
 
   .drawerSocials {

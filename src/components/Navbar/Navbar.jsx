@@ -9,6 +9,7 @@ import {
   Phone,
   Menu,
   X,
+  LogOut,
 } from "lucide-react";
 import {
   FaFacebookF,
@@ -19,8 +20,10 @@ import {
 } from "react-icons/fa";
 import { useLanguage } from "../../context/LanguageContext";
 import { useWishlist } from "../../context/WishlistContext";
+import { useCart } from "../../context/CartContext";
 import products from "../../data/products";
 import { searchProducts } from "../../utils/searchProducts";
+import { getCurrentUser, logoutUser, AUTH_EVENT } from "../../utils/auth";
 import logo from "../../assets/logo.svg";
 import styles from "./Navbar.module.css";
 
@@ -52,14 +55,18 @@ const categories = [
 const Navbar = () => {
   const { language, setLanguage, lang, t } = useLanguage();
   const { count: wishlistCount } = useWishlist();
+  const { count: cartCount } = useCart();
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
+  const loggedIn = Boolean(currentUser);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const accountRef = useRef(null);
   const searchRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const cartCount = 0;
   const isAz = lang === "az";
 
   const withLang = (path = "") => `/${lang}${path === "/" ? "" : path}`;
@@ -83,8 +90,42 @@ const Navbar = () => {
   useEffect(() => {
     setMenuOpen(false);
     setSearchOpen(false);
+    setAccountOpen(false);
     setActiveIndex(-1);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const sync = () => setCurrentUser(getCurrentUser());
+    window.addEventListener(AUTH_EVENT, sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(AUTH_EVENT, sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!accountOpen) return undefined;
+
+    const handleOutside = (event) => {
+      if (accountRef.current && !accountRef.current.contains(event.target)) {
+        setAccountOpen(false);
+      }
+    };
+    const handleKey = (event) => {
+      if (event.key === "Escape") setAccountOpen(false);
+    };
+
+    document.addEventListener("mousedown", handleOutside);
+    document.addEventListener("touchstart", handleOutside);
+    document.addEventListener("keydown", handleKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("touchstart", handleOutside);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [accountOpen]);
 
   useEffect(() => {
     if (!menuOpen) return undefined;
@@ -125,6 +166,15 @@ const Navbar = () => {
       document.removeEventListener("touchstart", handleOutside);
     };
   }, [searchOpen]);
+
+  const logoutLabel = isAz ? "Çıxış" : "Log out";
+
+  const handleLogout = () => {
+    logoutUser();
+    setAccountOpen(false);
+    setMenuOpen(false);
+    navigate(withLang("/"));
+  };
 
   const closeSearch = () => {
     setSearchOpen(false);
@@ -323,14 +373,52 @@ const Navbar = () => {
           ))}
         </div>
         <div className={styles.navbarActions}>
-          <Link
-            to={withLang("/login")}
-            className={styles.navbarAction}
-            title={t("account")}
-            aria-label={t("account")}
-          >
-            <UserRound />
-          </Link>
+          {loggedIn ? (
+            <div className={styles.accountWrap} ref={accountRef}>
+              <button
+                type="button"
+                className={`${styles.navbarAction} ${styles.loggedIn}`}
+                onClick={() => setAccountOpen((o) => !o)}
+                title={currentUser.name}
+                aria-label={t("account")}
+                aria-haspopup="menu"
+                aria-expanded={accountOpen}
+              >
+                <UserRound />
+              </button>
+
+              {accountOpen && (
+                <div className={styles.accountMenu} role="menu">
+                  <div className={styles.accountInfo}>
+                    <span className={styles.accountName}>
+                      {currentUser.name}
+                    </span>
+                    <span className={styles.accountEmail}>
+                      {currentUser.email}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className={styles.logoutBtn}
+                    onClick={handleLogout}
+                  >
+                    <LogOut size={18} />
+                    <span>{logoutLabel}</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              to={withLang("/login")}
+              className={styles.navbarAction}
+              title={t("account")}
+              aria-label={t("account")}
+            >
+              <UserRound />
+            </Link>
+          )}
           <Link
             to={withLang("/wishlist")}
             className={`${styles.navbarAction} ${styles.cartAction}`}
@@ -439,6 +527,26 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
+          {loggedIn && (
+            <div className={styles.drawerAccount}>
+              <div className={styles.drawerAccountInfo}>
+                <span className={styles.drawerAccountName}>
+                  {currentUser.name}
+                </span>
+                <span className={styles.drawerAccountEmail}>
+                  {currentUser.email}
+                </span>
+              </div>
+              <button
+                type="button"
+                className={styles.drawerLogout}
+                onClick={handleLogout}
+              >
+                <LogOut size={18} />
+                <span>{logoutLabel}</span>
+              </button>
+            </div>
+          )}
           <div className={styles.drawerMeta}>
             <a href="tel:126" className={styles.drawerPhone}>
               <Phone size={18} />

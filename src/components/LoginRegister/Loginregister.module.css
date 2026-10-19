@@ -1,0 +1,52 @@
+.page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 48px 5vw;
+  background: linear-gradient(180deg, #f4faf0 0%, #ffffff 100%);
+}
+
+.scene {
+  perspective: 1800px;
+  width: 100%;
+  max-width: 920px;
+}
+
+.inner {
+  display: grid;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.face {
+  grid-area: 1 / 1;
+  width: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+.hidden {
+  visibility: hidden;
+  transition: visibility 0s linear 0.35s;
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: 24px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inner {
+    transition: none;
+  }
+}
