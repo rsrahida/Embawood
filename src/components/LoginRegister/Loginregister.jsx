@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
-import styles from "./LoginRegister.module.css";
+import styles from "./Loginregister.module.css";
 
 export default function LoginRegister({ initialMode = "login" }) {
   const [mode, setMode] = useState(initialMode);
