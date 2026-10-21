@@ -1,0 +1,140 @@
+.card {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  background: radial-gradient(circle at 50% 35%, #ffffff, #e3e9e4);
+  overflow: hidden;
+}
+
+.toolbar {
+  position: absolute;
+  z-index: 5;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.toolbar button {
+  pointer-events: auto;
+  height: 30px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(6px);
+  font: inherit;
+  font-size: var(--fs-sm, 12px);
+  color: var(--ink-2, #44504a);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
+}
+.toolbar button:hover {
+  border-color: var(--green-dark);
+  color: var(--green-dark);
+}
+.toolbar .on {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+  color: #fff;
+}
+.helpText {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: var(--fs-xs, 11px);
+  color: var(--muted);
+}
+
+.viewport {
+  height: clamp(440px, 70vh, 660px);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.viewport:active {
+  cursor: grabbing;
+}
+.viewport canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.bar {
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  top: 0;
+  display: none;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 3px;
+  height: 42px;
+  max-width: calc(100% - 16px);
+  padding: 3px 3px 3px 12px;
+  border-radius: 999px;
+  background: var(--green-dark, #64b043);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.26);
+  white-space: nowrap;
+  will-change: transform;
+  user-select: none;
+}
+.barName {
+  min-width: 0;
+  max-width: 140px;
+  overflow: hidden;
+  font-size: var(--fs-sm, 12px);
+  font-weight: 600;
+  text-overflow: ellipsis;
+}
+.barBtn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.barBtn svg {
+  width: 17px;
+  height: 17px;
+}
+.barBtn:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+.barDanger:hover {
+  background: var(--danger, #dc3f45);
+}
+.barBtn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 1px;
+}
+
+@media (max-width: 520px) {
+  .helpText,
+  .barName {
+    display: none;
+  }
+  .bar {
+    padding-left: 3px;
+  }
+  .viewport {
+    height: clamp(380px, 62vh, 560px);
+  }
+}

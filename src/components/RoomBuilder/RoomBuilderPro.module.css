@@ -1,0 +1,355 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 14px;
+  padding: 10px 14px;
+}
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.toolBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font: inherit;
+  font-size: var(--fs-md);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
+}
+.toolBtn svg {
+  width: 15px;
+  height: 15px;
+}
+.toolBtn:hover:not(:disabled) {
+  border-color: var(--green-dark);
+  color: var(--green-dark);
+}
+.toolBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.toolOn {
+  background: var(--green-soft);
+  border-color: var(--green);
+  color: var(--green-dark);
+  font-weight: 600;
+}
+
+.sizeRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+.sizeField {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--muted);
+}
+.sizeField input::-webkit-outer-spin-button,
+.sizeField input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.sizeField input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  width: 52px;
+  height: 30px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--bg);
+  font: inherit;
+  font-size: var(--fs-md);
+  font-weight: 400;
+  color: var(--ink);
+  text-align: center;
+}
+.sizeField input:focus {
+  outline: 2px solid var(--green);
+  border-color: transparent;
+  background: #fff;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.layerBelow {
+  z-index: 1;
+}
+.layerAbove {
+  z-index: 99990;
+}
+.opening {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+}
+.opening:active {
+  cursor: grabbing;
+}
+.winBand {
+  fill: #a9d8f2;
+  stroke: #fff;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.doorBand {
+  fill: #7b5a3c;
+  stroke: #fff;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.openSel .winBand,
+.openSel .doorBand {
+  stroke: var(--green);
+  stroke-width: 3;
+}
+.swing {
+  fill: rgba(123, 90, 60, 0.12);
+  stroke: rgba(123, 90, 60, 0.7);
+  stroke-width: 1.2;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+.swingBad {
+  fill: rgba(220, 63, 69, 0.18);
+  stroke: var(--danger);
+}
+.leaf {
+  stroke: #7b5a3c;
+  stroke-width: 3;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+.measure line {
+  stroke: #1f2a24;
+  stroke-width: 1.2;
+  stroke-dasharray: 4 3;
+  vector-effect: non-scaling-stroke;
+}
+.measure text {
+  fill: #1f2a24;
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
+
+.dimTag {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.64);
+  color: #fff;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.openPanel {
+  padding: 12px 14px 14px;
+}
+.openHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.openAdd {
+  display: flex;
+  gap: 6px;
+}
+.openList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.openRow {
+  display: grid;
+  grid-template-columns: 84px 128px minmax(150px, 1.3fr) minmax(90px, 1fr) auto;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.openRow:hover {
+  border-color: var(--line-2);
+}
+.openRowSel,
+.openRowSel:hover {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+.openRow select {
+  height: 30px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: #fff;
+  font: inherit;
+  font-size: var(--fs-md);
+  color: var(--ink);
+}
+.openRow label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--muted);
+}
+.openRow input[type="range"] {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--slider);
+}
+.openName {
+  font-weight: 600;
+}
+.rowBtns {
+  display: flex;
+  gap: 6px;
+}
+
+.posCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.gapRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.openRow label.gapField {
+  min-width: 0;
+}
+.gapField span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gapField input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--bg);
+  font: inherit;
+  font-size: var(--fs-md);
+  font-weight: 400;
+  color: var(--ink);
+  text-align: center;
+}
+.gapField input:focus {
+  outline: 2px solid var(--green);
+  border-color: transparent;
+  background: #fff;
+}
+
+.miniBtn {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.miniBtn svg {
+  width: 15px;
+  height: 15px;
+}
+.miniBtn:hover {
+  border-color: var(--green-dark);
+  color: var(--green-dark);
+}
+.miniDanger:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.sketchCard {
+  padding: 10px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+}
+.sketchCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-sm);
+}
+
+@media (max-width: 1100px) {
+  .openRow {
+    grid-template-columns: 84px 128px minmax(0, 1fr) auto;
+  }
+  .posCell {
+    grid-column: 1 / -1;
+    order: 5;
+  }
+}
+@media (max-width: 820px) {
+  .openPanel {
+    padding: 12px;
+  }
+  .openRow {
+    grid-template-columns: 1fr 1fr;
+  }
+  .rowBtns {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+}
