@@ -74,6 +74,7 @@
 }
 
 .seg {
+  width: 390px;
   display: inline-flex;
   padding: 3px;
   gap: 2px;
@@ -94,6 +95,7 @@
   transition:
     background 0.15s,
     color 0.15s;
+    width: 130px;
 }
 .seg button:hover {
   color: var(--green-dark);

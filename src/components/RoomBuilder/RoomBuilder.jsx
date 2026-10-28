@@ -1144,6 +1144,29 @@ const RoomBuilder = () => {
                 </ul>
               )}
             </div>
+            <div className={styles.statusBar}>
+              <span className={styles.muted}>
+                {t("rbYourRoom")}: {room.w / 100}×{room.h / 100} {unitM} ·{" "}
+                {tx("Doluluq", "Filled")}: {fillPct}%
+              </span>
+              {overlapping.size > 0 && (
+                <span className={styles.warn}>⚠ {t("rbOverlap")}</span>
+              )}
+              {blockedDoors.size > 0 && (
+                <span className={styles.warn}>
+                  ⚠{" "}
+                  {tx(
+                    "Mebel qapının açılmasına mane olur",
+                    "Furniture blocks a door swing",
+                  )}
+                </span>
+              )}
+              {fillPct > 60 && (
+                <span className={styles.warn}>
+                  ⚠ {tx("Otaq çox doludur", "The room is crowded")}
+                </span>
+              )}
+            </div>
             {view === "2d" && (
               <div
                 className={`${styles.stageCard} ${darkWall ? styles.stageDark : ""}`}
@@ -1412,29 +1435,7 @@ const RoomBuilder = () => {
               <SketchView data={sketchData} labels={sketchLabels} />
             )}
 
-            <div className={styles.statusBar}>
-              <span className={styles.muted}>
-                {t("rbYourRoom")}: {room.w / 100}×{room.h / 100} {unitM} ·{" "}
-                {tx("Doluluq", "Filled")}: {fillPct}%
-              </span>
-              {overlapping.size > 0 && (
-                <span className={styles.warn}>⚠ {t("rbOverlap")}</span>
-              )}
-              {blockedDoors.size > 0 && (
-                <span className={styles.warn}>
-                  ⚠{" "}
-                  {tx(
-                    "Mebel qapının açılmasına mane olur",
-                    "Furniture blocks a door swing",
-                  )}
-                </span>
-              )}
-              {fillPct > 60 && (
-                <span className={styles.warn}>
-                  ⚠ {tx("Otaq çox doludur", "The room is crowded")}
-                </span>
-              )}
-            </div>
+            
           </div>
 
           <aside className={styles.aside}>
